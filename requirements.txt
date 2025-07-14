@@ -1,12 +1,12 @@
-<<<<<<< HEAD
+
 Flask
 gunicorn
 python-barcode
 Pillow
 requests
 
-=======
+
 Flask
 python-barcode
 Pillow
->>>>>>> 8e75a74908cb3c2b9deaab1cf76e7a5f06a42ae1
+
