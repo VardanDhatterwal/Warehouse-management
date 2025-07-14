@@ -1,0 +1,30 @@
+warehouse-flask/
+├── app.py
+├── email_utils.py
+├── requirements.txt
+├── render.yaml
+├── README.md
+├── .gitignore
+├── products.json              # optional: persistent product storage (if needed)
+├── templates/
+│   ├── layout.html
+│   ├── index.html             # customer home
+│   ├── admin.html             # admin dashboard
+│   ├── cart.html              # cart view
+│   ├── manage_orders.html     # admin order management
+│   ├── login.html
+│   ├── register.html
+│   ├── order_history.html
+│   ├── track_order.html
+│   ├── checkout.html
+├── static/
+│   ├── barcodes/              # generated barcodes
+│   │   ├── product_1.png
+│   │   ├── ...
+│   ├── images/                # uploaded product images
+│   │   ├── product_1_mouse.jpg
+│   ├── css/
+│   │   ├── style.css          # optional external styles
+│   ├── js/
+│       └── script.js          # optional JS logic
+└── .venv/                     # virtual environment (ignored in Git)
