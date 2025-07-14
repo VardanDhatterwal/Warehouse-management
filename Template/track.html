@@ -1,0 +1,136 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<style>
+  .card {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+
+  .form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .form input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+
+  .form button {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .form button:hover {
+    background: #0056b3;
+  }
+
+  .status-processing { color: orange; font-weight: bold; }
+  .status-shipped { color: blue; font-weight: bold; }
+  .status-delivered { color: green; font-weight: bold; }
+
+  .progress-bar-container {
+    width: 100%;
+    background-color: #eee;
+    height: 20px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.4s ease-in-out;
+  }
+
+  .flash-success { color: green; font-weight: bold; margin-bottom: 10px; }
+  .flash-error { color: red; font-weight: bold; margin-bottom: 10px; }
+
+  @media (max-width: 600px) {
+    .form {
+      flex-direction: column;
+    }
+    .form button {
+      width: 100%;
+    }
+  }
+</style>
+
+<h2>📍 Track Your Order</h2>
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, msg in messages %}
+      <div class="flash-{{ category }}">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<!-- Order ID Form -->
+<div class="card">
+  <form method="POST" class="form">
+    <input name="order_id" placeholder="Enter Order ID" required>
+    <button type="submit">🔍 Track</button>
+  </form>
+</div>
+
+<!-- Order Details -->
+{% if order %}
+  <div class="card">
+    <h3>🧾 Order Summary</h3>
+    <p><strong>Order ID:</strong> {{ order['orderId'] }}</p>
+    <p><strong>Name:</strong> {{ order['customerName'] }}</p>
+    <p><strong>Email:</strong> {{ order['email'] }}</p>
+    <p>
+      <strong>Status:</strong>
+      {% if order['status'] == 'Processing' %}
+        <span class="status-processing">⏳ Processing</span>
+      {% elif order['status'] == 'Shipped' %}
+        <span class="status-shipped">🚚 Shipped</span>
+      {% elif order['status'] == 'Delivered' %}
+        <span class="status-delivered">✅ Delivered</span>
+      {% else %}
+        <span style="color: gray;">Unknown</span>
+      {% endif %}
+    </p>
+    <p><strong>Placed On:</strong> {{ order['timestamp'] }}</p>
+
+    <!-- Progress bar -->
+    {% set width =
+      '33%' if order['status'] == 'Processing' else
+      '66%' if order['status'] == 'Shipped' else
+      '100%' if order['status'] == 'Delivered' else '10%' %}
+    {% set color =
+      'orange' if order['status'] == 'Processing' else
+      'blue' if order['status'] == 'Shipped' else
+      'green' if order['status'] == 'Delivered' else 'gray' %}
+
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" style="width: {{ width }}; background-color: {{ color }};"></div>
+    </div>
+
+    <p><strong>Items:</strong></p>
+    <ul>
+      {% for item in order['items'] %}
+        <li>{{ item['name'] }} — Qty: {{ item['quantity'] }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+{% endblock %}

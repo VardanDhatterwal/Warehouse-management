@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order History</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f4;
+            padding: 30px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.08);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        .nav {
+            margin-bottom: 20px;
+        }
+        .order-card {
+            background-color: #fafafa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ccc;
+        }
+        .status {
+            font-weight: bold;
+        }
+        .status.Processing { color: orange; }
+        .status.Shipped { color: blue; }
+        .status.Delivered { color: green; }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+        <a href="/home">← Back to Home</a> |
+        <a href="/logout">Logout</a>
+    </div>
+
+    <h2>📜 Your Order History</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div style="color: {{ 'green' if category == 'success' else 'red' }};">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if orders %}
+        {% for order in orders %}
+        <div class="order-card">
+            <p><strong>Order ID:</strong> {{ order.orderId }}</p>
+            <p><strong>Date:</strong> {{ order.timestamp }}</p>
+            <p><strong>Status:</strong> <span class="status {{ order.status }}">{{ order.status }}</span></p>
+            <p><strong>Items:</strong></p>
+            <ul>
+                {% for item in order['items'] %}
+                    <li>{{ item.name }} × {{ item.quantity }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>You have not placed any orders yet.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

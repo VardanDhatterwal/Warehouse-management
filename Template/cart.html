@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Cart</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f9f9f9;
+            padding: 40px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .nav {
+            margin-bottom: 20px;
+        }
+        .nav a {
+            text-decoration: none;
+            margin-right: 10px;
+            color: #007bff;
+        }
+        .flash.success {
+            color: green;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .flash.error {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <a href="/home">← Back to Home</a> |
+      <a href="/logout">Logout</a>
+    </div>
+
+    <h2>🛒 Your Cart</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if cart_items %}
+    <form method="POST" action="/checkout">
+        <label><b>Customer Name:</b></label>
+        <input type="text" name="customer_name" required>
+
+        <h3>Items:</h3>
+<table width="100%" border="1" cellspacing="0" cellpadding="8" style="border-collapse: collapse; text-align: left;">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Qty</th>
+      <th>Price</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in cart_items %}
+      <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>₹{{ "%.2f"|format(item.price) }}</td>
+        <td>₹{{ "%.2f"|format(item.total) }}</td>
+        <input type="hidden" name="product_ids" value="{{ item.id }}">
+        <input type="hidden" name="quantities" value="{{ item.quantity }}">
+      </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
+      <td><strong>₹{{ "%.2f"|format(total) }}</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+
+        <button type="submit">✅ Place Order</button>
+    </form>
+    {% else %}
+      <p>Your cart is empty.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

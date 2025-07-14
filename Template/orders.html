@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<style>
+  .card {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  }
+  .form input, .form button {
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    max-width: 400px;
+    display: block;
+  }
+  .form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .form button:hover {
+    background-color: #0056b3;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+</style>
+
+<h2>🛒 Place an Order</h2>
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, msg in messages %}
+      <div style="color: {{ 'green' if category == 'success' else 'red' }}; margin-bottom: 10px;">
+        {{ msg }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="card">
+  <form method="POST" action="/place-order" class="form">
+    <input name="customer_name" placeholder="Your Name" required>
+    <input name="email" type="email" placeholder="Your Email" required>
+
+    <h3>📦 Select Products</h3>
+    <div class="product-grid">
+      {% for p in products %}
+        <div class="card">
+          <label style="display: block;">
+            <input type="checkbox" name="product_ids[]" value="{{ p.id }}">
+            <strong>{{ p.name }}</strong><br>
+            <small>Location: {{ p.warehouse }}/{{ p.cabin }}/{{ p.tray }}</small><br>
+            Quantity:
+            <input type="number" name="quantities[]" value="1" min="1">

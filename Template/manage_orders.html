@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>🛠️ Manage Orders</h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, msg in messages %}
+    <div class="flash-{{ category }}">{{ msg }}</div>
+  {% endfor %}
+{% endwith %}
+
+{% for order in orders %}
+<div class="card">
+  <h3>Order ID: {{ order.orderId }}</h3>
+  <p><b>Customer:</b> {{ order.customerName }}</p>
+  <p><b>Status:</b> {{ order.status }}</p>
+  <p><b>Date:</b> {{ order.timestamp }}</p>
+  <p><b>Items:</b></p>
+  <ul>
+    {% for item in order.items_list %}
+      <li>{{ item.name }} × {{ item.quantity }}</li>
+    {% endfor %}
+  </ul>
+
+  <form method="POST">
+    <input type="hidden" name="order_id" value="{{ order.orderId }}">
+    <select name="status">
+      <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>Processing</option>
+      <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+      <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+    </select>
+    <button type="submit">Update Status</button>
+  </form>
+</div>
+{% endfor %}
+{% endblock %}
